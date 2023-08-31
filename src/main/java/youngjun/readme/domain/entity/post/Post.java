@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import youngjun.readme.domain.entity.user.User;
 
@@ -16,29 +17,33 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
 
-    public Post (User user, String title, String preview) {
-        this.user = user;
+    public Post (User writer, String title, String content) {
+        this.writer = writer;
         this.title = title;
-        this.preview = preview;
-        this.goodCount = 0;
+        this.content = content;
+        this.voteCount = 0;
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "writer_id")
+    private User writer;
+
+    private String title;
+    private String content;
 
     @CreatedDate
     private LocalDateTime created;
 
-    private String title;
-    private String preview;
+    @LastModifiedDate
+    private LocalDateTime modified;
 
-    private long goodCount;
+    private int voteCount;
 
-    public void increaseGoodCount () {
-        this.goodCount++;
+    public void vote () {
+        this.voteCount++;
     }
 }

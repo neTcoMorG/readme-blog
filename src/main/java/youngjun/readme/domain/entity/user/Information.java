@@ -12,8 +12,7 @@ public class Information {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "linkedIn")
-    private String linkedIn;
+    private String linkedin;
     private String github;
     private String website;
 }
