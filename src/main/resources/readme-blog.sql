@@ -1,4 +1,4 @@
-readme-blog sql
+[readme-blog SQL]
 
 CREATE TABLE USER (
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
