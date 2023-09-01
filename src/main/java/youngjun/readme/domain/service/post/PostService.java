@@ -1,4 +1,4 @@
-package youngjun.readme.domain.service.user;
+package youngjun.readme.domain.service.post;
 
 import youngjun.readme.domain.dto.request.RequestCreatePost;
 import youngjun.readme.domain.dto.request.RequestUpdatePost;

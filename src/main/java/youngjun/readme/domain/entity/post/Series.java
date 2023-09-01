@@ -1,4 +1,5 @@
-package youngjun.readme.domain.entity.user;
+package youngjun.readme.domain.entity.post;
+
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import youngjun.readme.domain.entity.user.User;
 
 import java.time.LocalDateTime;
 
@@ -13,27 +15,24 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Follow {
+public class Series {
 
-    public Follow (User follower, User following) {
-        this.follower = follower;
-        this.following = following;
+    public Series(User user, String name) {
+        this.user = user;
+        this.name = name;
     }
 
     @Id
-    @Column(name = "follower_id")
-    private Long followerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId
-    @JoinColumn(name = "follower_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private User follower;
+    @JoinColumn(name = "owner_id")
+    private User user;
 
-    @JoinColumn(name = "following_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User following;
+    @Column(name = "series_name")
+    private String name;
 
     @CreatedDate
     private LocalDateTime created;
-
 }

@@ -32,6 +32,10 @@ public class Post {
     @JoinColumn(name = "writer_id")
     private User writer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "series_id")
+    private Series series;
+
     private String title;
     private String content;
 
