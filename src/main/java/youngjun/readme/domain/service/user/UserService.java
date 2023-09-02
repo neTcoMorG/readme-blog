@@ -10,4 +10,5 @@ public interface UserService {
     User getUser (String tag);
     List<ResponseUser> getFollowing (String tag);
     List<ResponseUser> getFollowers (String tag);
+    void follow (String follower, String following);
 }

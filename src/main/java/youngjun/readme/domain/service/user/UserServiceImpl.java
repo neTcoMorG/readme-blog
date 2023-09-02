@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import youngjun.readme.domain.dto.response.ResponseUser;
+import youngjun.readme.domain.entity.user.Follow;
 import youngjun.readme.domain.entity.user.User;
+import youngjun.readme.domain.exception.MalformedParamException;
 import youngjun.readme.domain.exception.NotFoundException;
 import youngjun.readme.domain.repository.FollowRepository;
 import youngjun.readme.domain.repository.UserRepository;
@@ -43,5 +46,29 @@ public class UserServiceImpl implements UserService {
         List<ResponseUser> response = new ArrayList<>();
         followRepository.findByFollowing(user).forEach(fl -> response.add(om.convertValue(fl, ResponseUser.class)));
         return response;
+    }
+
+    @Override
+    @Transactional
+    public void follow (String follower, String following) throws MalformedParamException {
+        if (isSelf(follower, following)) {
+            throw new MalformedParamException("자기 자신을 팔로우할 수 없습니다");
+        }
+
+        User followerUser  = getUser(follower);
+        User followingUser = getUser(following);
+
+//        이미 팔로우중이면 언팔로우
+        if (followRepository.isFollowing(followerUser, followingUser)) {
+            Follow follow = followRepository.getFollowByFollowerToFollowing(followerUser, followingUser).orElseThrow(NotFoundException::new);
+            followRepository.delete(follow);
+            return;
+        }
+
+        followRepository.save(new Follow(followerUser, followingUser));
+    }
+
+    private boolean isSelf (String a, String b) {
+        return a.equals(b);
     }
 }
