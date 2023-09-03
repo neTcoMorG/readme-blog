@@ -21,10 +21,9 @@ public class Follow {
     }
 
     @Id
-    @Column(name = "follower_id")
-    private Long followerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId
     @JoinColumn(name = "follower_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User follower;

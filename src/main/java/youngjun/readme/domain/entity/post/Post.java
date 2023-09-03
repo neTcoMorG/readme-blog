@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import youngjun.readme.domain.dto.request.RequestUpdatePost;
 import youngjun.readme.domain.entity.user.User;
 
 import java.time.LocalDateTime;
@@ -49,5 +50,9 @@ public class Post {
 
     public void vote () {
         this.voteCount++;
+    }
+    public void update (RequestUpdatePost dto) {
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 }

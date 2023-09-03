@@ -10,15 +10,15 @@ import java.util.List;
 public interface PostService {
 
     // Create
-    void addPost (User writer, RequestCreatePost requestCreatePost);
+    Post addPost (String writerTag, RequestCreatePost requestCreatePost);
 
     // Read
     Post getPost (Long id);
-    List<Post> getPosts (User user);
+    List<Post> getPosts (String userTag);
 
     // Update
-    void updatePost (Post post, RequestUpdatePost requestUpdatePost);
+    void updatePost (String editorTag, Long postId, RequestUpdatePost requestUpdatePost);
 
     // Delete
-    void removePost (User deleter, Post post);
+    void removePost (String deleterTag, Long postId);
 }

@@ -21,18 +21,7 @@ CREATE TABLE INFORMATION (
 );
 
 CREATE TABLE follow (
-	follower_id BIGINT NOT NULL,
-	following_id BIGINT NOT NULL,
-	created DATETIME NOT NULL,
-
-	FOREIGN KEY (follower_id) REFERENCES user(id)
-		ON DELETE CASCADE
-
-	FOREIGN KEY (following_id) REFERENCES user(id)
-		ON DELETE CASCADE
-);
-
-CREATE TABLE follow (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
 	follower_id BIGINT NOT NULL,
 	following_id BIGINT NOT NULL,
 	created DATETIME NOT NULL,
@@ -67,7 +56,7 @@ CREATE TABLE POST_VOTE (
 	vote_date DATETIME NOT NULL,
 
 	FOREIGN KEY (post_id) REFERENCES post(id)
-		ON DELETE CASCADE,
+		ON DELETE CASCADE
 );
 
 CREATE TABLE series (
@@ -111,4 +100,13 @@ CREATE TABLE user_view_history (
 		ON DELETE CASCADE,
 
 	UNIQUE INDEX idx_user_id_post_id(user_id, post_id)
+);
+
+CREATE TABLE tag(
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+	post_id BIGINT NOT NULL,
+	tag VARCHAR(50) NOT NULL,
+
+	FOREIGN KEY (post_id) REFERENCES post(id)
+		ON DELETE CASCADE
 );

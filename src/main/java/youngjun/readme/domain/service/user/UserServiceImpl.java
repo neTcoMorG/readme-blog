@@ -30,13 +30,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByTag(tag).orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다."));
     }
 
-
     // 함수형 인터페이스를 활용해서 중복 최소화 하기.
     @Override
     public List<ResponseUser> getFollowing (String tag) {
         User user = getUser(tag);
         List<ResponseUser> response = new ArrayList<>();
-        followRepository.findByFollower(user).forEach(fw -> response.add(om.convertValue(fw, ResponseUser.class)));
+        followRepository.findByFollower(user).forEach(fw -> response.add(om.convertValue(fw.getFollowing(), ResponseUser.class)));
         return response;
     }
 
@@ -44,7 +43,9 @@ public class UserServiceImpl implements UserService {
     public List<ResponseUser> getFollowers (String tag) {
         User user = getUser(tag);
         List<ResponseUser> response = new ArrayList<>();
-        followRepository.findByFollowing(user).forEach(fl -> response.add(om.convertValue(fl, ResponseUser.class)));
+        followRepository.findByFollowing(user).forEach(fl ->{
+            response.add(om.convertValue(fl.getFollower(), ResponseUser.class));
+        });
         return response;
     }
 
