@@ -9,6 +9,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import youngjun.readme.domain.entity.user.User;
+import youngjun.readme.domain.repository.UserRepository;
 import youngjun.readme.domain.service.user.auth.protocol.ResponseAccessToken;
 import youngjun.readme.domain.service.user.auth.protocol.ResponseGithubUserObject;
 import youngjun.readme.domain.utils.JwtProvider;
@@ -20,6 +22,8 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     private final RestTemplate restTemplate;
     private final JwtProvider jwtProvider;
+
+    private final UserRepository userRepository;
 
     @Value("${oauth.github.access_token_url}")
     private String accessTokenUrl;
@@ -38,9 +42,29 @@ public class UserAuthServiceImpl implements UserAuthService {
         ResponseAccessToken accessToken = getAccessToken(code);
         ResponseGithubUserObject githubObject = getGithubObject(accessToken.getAccess_token());
 
+        if (!isExists(githubObject.getEmail())) {
+            userRepository.save(new User(githubObject.getEmail(),
+                    parseTag(githubObject.getEmail()),
+                    "",
+                    githubObject.getAvatar_url()));
+            log.info("신규 가입");
+        }
 
+        return jwtProvider.createToken(5000, githubObject.getEmail());
+    }
 
-        return jwtProvider.createToken(1000, githubObject.getEmail());
+    private String parseTag (String email) {
+        return "@" + email.split("@")[0];
+    };
+
+    private boolean isExists (String email) {
+        try {
+            User user = userRepository.findByEmail(email).orElseThrow();
+            return true;
+        }
+        catch (Exception ex) {
+            return false;
+        }
     }
 
     private MultiValueMap<String, String> getAccessTokenParam (String cid, String key, String code) {
