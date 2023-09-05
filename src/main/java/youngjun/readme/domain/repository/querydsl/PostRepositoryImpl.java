@@ -34,7 +34,17 @@ public class PostRepositoryImpl implements PostRepositoryDsl {
 
     @Override
     public Page<ResponseUserPost> getPostsVote (Pageable pageable) {
-        return null;
+        QueryResults<ResponseUserPost> queryResults =
+                query.select(new QResponseUserPost(
+                                new QResponseUser(post.writer.email, post.writer.tag, post.writer.profile_url),
+                                post.title, post.content, post.modified))
+                        .from(post)
+                        .orderBy(post.voteCount.desc())
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetchResults();
+
+        return new PageImpl<>(queryResults.getResults(), pageable, queryResults.getTotal());
     }
 
     @Override

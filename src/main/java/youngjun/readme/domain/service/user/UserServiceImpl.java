@@ -34,8 +34,8 @@ public class UserServiceImpl implements UserService {
         if (isExistsTag(newTag)) {
             throw new DuplicateException("이미 존재하는 태그명 입니다");
         }
-        user.updateTag(newTag);
 
+        user.updateTag(newTag);
         return user;
     }
 
@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         User user = getUser(tag);
         List<ResponseUser> response = new ArrayList<>();
         followRepository.findByFollower(user).forEach(fw -> response.add(om.convertValue(fw.getFollowing(), ResponseUser.class)));
+
         return response;
     }
 
@@ -57,6 +58,7 @@ public class UserServiceImpl implements UserService {
     public List<ResponseUser> getFollowers (String tag) {
         User user = getUser(tag);
         List<ResponseUser> response = new ArrayList<>();
+
         followRepository.findByFollowing(user).forEach(fl ->{
             response.add(om.convertValue(fl.getFollower(), ResponseUser.class));
         });
@@ -69,7 +71,7 @@ public class UserServiceImpl implements UserService {
         if (isSelf(follower, following)) {
             throw new MalformedParamException("자기 자신을 팔로우할 수 없습니다");
         }
-        
+
         User followerUser  = getUser(follower);
         User followingUser = getUser(following);
 

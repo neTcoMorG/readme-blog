@@ -35,9 +35,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Post addPost (String writerTag, RequestCreatePost requestCreatePost) {
         User writer = userService.getUser(writerTag);
-        Post post = new Post(writer, requestCreatePost.getTitle(), requestCreatePost.getText());
+        Post post = postRepository.save(new Post(writer, requestCreatePost.getTitle(), requestCreatePost.getText()));
 
-        postRepository.save(post);
         for (String t : requestCreatePost.getTags()) {
             tagRepository.save(new Tag(post, t));
         }
@@ -62,12 +61,12 @@ public class PostServiceImpl implements PostService {
 
         switch (type) {
             case RECENT -> result = postRepository.getPostsRecent(pageable);
-            case VIEW -> result = postRepository.getPostsViewer(pageable);
-            case VOTE -> result = postRepository.getPostsVote(pageable);
+            case VIEW -> result   = postRepository.getPostsViewer(pageable);
+            case VOTE -> result   = postRepository.getPostsVote(pageable);
         }
 
         if (result == null) {
-            throw new MalformedParamException();
+            throw new MalformedParamException("검색 조건이 유효하지 않습니다.");
         }
 
         return result;
