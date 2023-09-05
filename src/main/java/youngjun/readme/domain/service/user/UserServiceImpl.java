@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import youngjun.readme.domain.dto.response.ResponseUser;
 import youngjun.readme.domain.entity.user.Follow;
 import youngjun.readme.domain.entity.user.User;
+import youngjun.readme.domain.exception.DuplicateException;
 import youngjun.readme.domain.exception.MalformedParamException;
 import youngjun.readme.domain.exception.NotFoundException;
 import youngjun.readme.domain.repository.FollowRepository;
@@ -24,6 +25,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final ObjectMapper om;
+
+    @Override
+    @Transactional
+    public User updateUserTag (String beforeTag, String newTag) {
+        User user = getUser(beforeTag);
+
+        if (isExistsTag(newTag)) {
+            throw new DuplicateException("이미 존재하는 태그명 입니다");
+        }
+        user.updateTag(newTag);
+
+        return user;
+    }
 
     @Override
     public User getUser (String tag) {
@@ -55,7 +69,7 @@ public class UserServiceImpl implements UserService {
         if (isSelf(follower, following)) {
             throw new MalformedParamException("자기 자신을 팔로우할 수 없습니다");
         }
-
+        
         User followerUser  = getUser(follower);
         User followingUser = getUser(following);
 
@@ -71,5 +85,15 @@ public class UserServiceImpl implements UserService {
 
     private boolean isSelf (String a, String b) {
         return a.equals(b);
+    }
+
+    private boolean isExistsTag (String tag) {
+        try {
+            User user = getUser(tag);
+            return true;
+        }
+        catch (NotFoundException ignored) {
+            return false;
+        }
     }
 }

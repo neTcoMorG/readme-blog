@@ -1,6 +1,7 @@
 package youngjun.readme.domain.service.user;
 
-import org.junit.jupiter.api.Assertions;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import youngjun.readme.domain.dto.response.ResponseUser;
 import youngjun.readme.domain.entity.user.User;
-import youngjun.readme.domain.exception.DuplicateException;
 import youngjun.readme.domain.exception.MalformedParamException;
+import youngjun.readme.domain.exception.NotFoundException;
 import youngjun.readme.domain.repository.UserRepository;
 
 import java.util.List;
@@ -26,6 +27,9 @@ class UserServiceImplTest {
 
     @Autowired
     UserService userService;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @BeforeEach
     void init () {
@@ -99,5 +103,19 @@ class UserServiceImplTest {
     @DisplayName("자기 자신을 팔로우할 경우 예외 발생")
     void selfFollowExceptionTest () {
         assertThrows(MalformedParamException.class, () -> userService.follow("@test1", "@test1"));
+    }
+
+    @Test
+    @DisplayName("@test1을 @test2로 변경")
+    void updateTagTest () {
+        User user = userService.updateUserTag("@test1", "@updatetest1");
+
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThrows(NotFoundException.class, () -> userService.getUser("@test1"));
+
+        User after = userService.getUser("@updatetest1");
+        assertEquals(after.getEmail(), "test1@test.com");
     }
 }

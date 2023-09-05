@@ -11,4 +11,6 @@ public interface UserService {
     List<ResponseUser> getFollowing (String tag);
     List<ResponseUser> getFollowers (String tag);
     void follow (String follower, String following);
+
+    User updateUserTag (String beforeTag, String newTag);
 }

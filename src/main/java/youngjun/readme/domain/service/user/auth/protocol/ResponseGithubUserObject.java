@@ -1,19 +1,14 @@
-package youngjun.readme.domain.dto.request;
+package youngjun.readme.domain.service.user.auth.protocol;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RequestCreatePost {
-
-    private String title;
-    private String text;
-    private List<String> tags;
-
+public class ResponseGithubUserObject {
+    private String email;
+    private String url;
 }

@@ -2,13 +2,17 @@ package youngjun.readme.domain.service.post;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import youngjun.readme.domain.dto.request.RequestCreatePost;
 import youngjun.readme.domain.dto.request.RequestUpdatePost;
+import youngjun.readme.domain.dto.response.ResponseUserPost;
 import youngjun.readme.domain.entity.post.Post;
 import youngjun.readme.domain.entity.post.Tag;
 import youngjun.readme.domain.entity.user.User;
+import youngjun.readme.domain.exception.MalformedParamException;
 import youngjun.readme.domain.exception.NotFoundException;
 import youngjun.readme.domain.exception.PermissionDenyException;
 import youngjun.readme.domain.repository.PostRepository;
@@ -50,6 +54,23 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPosts (String userTag) {
         User findUser = userService.getUser(userTag);
         return postRepository.findByWriter(findUser);
+    }
+
+    @Override
+    public Page<ResponseUserPost> getPosts (SearchType type, Pageable pageable) throws MalformedParamException {
+        Page<ResponseUserPost> result = null;
+
+        switch (type) {
+            case RECENT -> result = postRepository.getPostsRecent(pageable);
+            case VIEW -> result = postRepository.getPostsViewer(pageable);
+            case VOTE -> result = postRepository.getPostsVote(pageable);
+        }
+
+        if (result == null) {
+            throw new MalformedParamException();
+        }
+
+        return result;
     }
 
     @Override

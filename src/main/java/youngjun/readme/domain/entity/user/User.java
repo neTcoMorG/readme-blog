@@ -29,4 +29,8 @@ public class User {
     private String about;
     private String profile_url;
 
+    public void updateTag (String tag) {
+        this.tag = tag;
+    }
+
 }
