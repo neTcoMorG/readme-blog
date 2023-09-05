@@ -1,4 +1,4 @@
-package youngjun.readme.domain.service.user.auth;
+package youngjun.readme.domain.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserMapperObject {
+public class UserObject {
     private String email;
     private String tag;
 }

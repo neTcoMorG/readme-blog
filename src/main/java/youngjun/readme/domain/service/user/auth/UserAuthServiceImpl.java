@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import youngjun.readme.domain.dto.UserObject;
 import youngjun.readme.domain.entity.user.User;
 import youngjun.readme.domain.repository.UserRepository;
 import youngjun.readme.domain.service.user.auth.protocol.ResponseAccessToken;
@@ -52,8 +53,8 @@ public class UserAuthServiceImpl implements UserAuthService {
             log.info("신규 가입");
         }
 
-        UserMapperObject userMapperObject = new UserMapperObject(githubObject.getEmail(), parseTag(githubObject.getEmail()));
-        return jwtProvider.createToken(5000, new ObjectMapper().writeValueAsString(userMapperObject));
+        UserObject userObject = new UserObject(githubObject.getEmail(), parseTag(githubObject.getEmail()));
+        return jwtProvider.createToken(5000, new ObjectMapper().writeValueAsString(userObject));
     }
 
     private String parseTag (String email) {
