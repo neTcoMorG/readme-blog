@@ -1,5 +1,7 @@
 package youngjun.readme.domain.service.user.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +40,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     private String key;
 
     @Override
-    public String callback (String code) {
+    public String callback (String code) throws JsonProcessingException {
         ResponseAccessToken accessToken = getAccessToken(code);
         ResponseGithubUserObject githubObject = getGithubObject(accessToken.getAccess_token());
 
@@ -50,7 +52,8 @@ public class UserAuthServiceImpl implements UserAuthService {
             log.info("신규 가입");
         }
 
-        return jwtProvider.createToken(5000, githubObject.getEmail());
+        UserMapperObject userMapperObject = new UserMapperObject(githubObject.getEmail(), parseTag(githubObject.getEmail()));
+        return jwtProvider.createToken(5000, new ObjectMapper().writeValueAsString(userMapperObject));
     }
 
     private String parseTag (String email) {

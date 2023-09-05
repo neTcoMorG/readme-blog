@@ -1,6 +1,7 @@
 package youngjun.readme.web;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class OauthController {
     private final UserAuthService userAuthService;
 
     @GetMapping("/github")
-    public HttpEntity<?> github (@RequestParam String code) {
+    public HttpEntity<?> github (@RequestParam String code) throws Exception {
         return ResponseEntity.ok(userAuthService.callback(code));
     }
 }
